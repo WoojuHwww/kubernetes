@@ -1,0 +1,11 @@
+#2026/01/07
+#학습내용
+-namespace 개념과 namespace 생성 및 관리 방법
+-context 개념과 cluster에 따른 동작 방법
+-docker를 사용해 이미지를 생성하고 업로드한 이미지를 통한 Pod생성
+-ResourceQuota와 LimitRange를 통한 자원 제한
+-min/max/default/defaultRequest의 차이
+
+# min/max는Pod가 생성되기위한 조건(GATE)
+# DefaultRequest는 Pod 생성시 requests가 없을때 자동으로 값을 조정
+# default는 Pod 생성시 limits가 없을 때 자동으로 생성

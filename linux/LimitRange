@@ -1,0 +1,124 @@
+# Kubernetes LimitRange 실습 정리
+
+## 실습 환경
+- Cluster: kubeadm
+- Node: k8s-master
+- Namespace: rq-lab
+
+## LimitRange YAML 적용 (Dry-run)
+kubectl apply -f step1-limitrange-min.yaml --dry-run=client
+
+## LimitRange 실제 적용
+kubectl apply -f step1-limitrange-min.yaml
+
+## LimitRange 확인
+kubectl get limitranges --namespace rq-lab
+<결과>
+NAME     CREATED AT
+lr-min   2026-01-07T06:53:48Z
+
+## LimitRange 상세확인
+kubectl describe limitranges lg-min --namespace rq-lab
+<결과>
+Name:       lr-min
+Namespace:  rq-lab
+
+Type        Resource  Min     Max   Default Request  Default Limit
+----        --------  ---     ---   ---------------  -------------
+Container   cpu       200m    -     200m             -
+Container   memory    128Mi   -     128Mi            -
+
+#최소조건보다 큰 pod는 생성 가능
+kubectl  apply  -f  step1-normal-pod.yaml
+<결과>
+pod/normal-pod created
+
+#Pod 생성결과 확인 
+kubectl  get  pods  -o  wide  --namespace  rq-lab
+<결과>
+NAME         READY   STATUS    RESTARTS   AGE   IP            NODE          NOMINATED NODE   READINESS GATES
+normal-pod   1/1     Running   0          79s   10.244.2.26   k8s-worker2   <none>           <none>
+
+# 전체 pod 삭제
+kubectl  delete  pod  --namespace  rq-lab   --all
+
+# limitRange 삭제
+kubectl  delete  limitranges  lr-min   --namespace  rq-lab
+
+EX2) LimitRange min/max로 파드 리소스 범위를 강제하고, 범위를 벗어난 파드 생성이 실패하는지 확인
+min(cpu 100m, memory 128Mi)보다 작은 requests/limits를 가진 컨테이너는 생성 거부되는 것을 확인
+max(cpu 300m, memory 512Mi)보다 큰 requests/limits를 가진 컨테이너는 생성 거부되는 것을 확인
+
+#결과 확인
+kubectl  describe  limitranges  lr-minmax  --namespace  rq-lab
+<결과>
+Name:       lr-minmax
+Namespace:  rq-lab
+Type        Resource	  Min  	Max	Default Request  	Default Limit  	Max Limit/Request Ratio
+----        --------	  ---  	---   	---------------	------------- 	-----------------------
+Container   memory	  128Mi	512Mi	512Mi            	512Mi        	-
+Container   cpu     	  100m 	300m 	300m             	300m         	-
+
+
+EX3) imitRange 기본값 자동 주입: default CPU/Memory를 설정하고 resources 없는 파드에 자동 적용되는지 확인
+
+-default
+ # cpu: 100m
+ # memory: 256Mi
+
+-실습 명령어에 대한 주석
+ # resources 없는 파드 생성
+ # describe로 자동 주입 확인
+ 
+#결과 확인
+kubectl  describe  limitranges  lr-default  --namespace  rq-lab
+<결과>
+Name:       lr-default
+Namespace:  rq-lab
+Type    	  Resource   Min  	Max  	Default Request  	Default Limit  	Max Limit/Request Ratio
+----     	  --------   ---	---	---------------	-------------	-----------------------
+Container	  memory	    -    	-    	256Mi            	256Mi          	-
+Container	  cpu  	    -    	-    	100m             	100m           	-
+
+
+#Default 설정을 하고 Pod 상태 확인
+kubectl  describe  pod  default-pod  --namespace  rq-lab
+<결과>
+	~~~~~~~~~~ 중간 생략 ~~~~~~~~~~
+Containers:
+  nginx:
+    Container ID:   	containerd://9626bc5b4420836f5f95e16af96f1fe14e2836ea1ab664b80d60c40731791811
+    Image:          	nginx:latest
+    Image ID:       	docker.io/library/nginx@sha256:ca871a86d45a3ec6864dc45f014b11fe626145569ef0e74deaffc95a3b15b430
+    Port:           	<none>
+    Host Port:      	<none>
+    State:          	Running
+      Started:      	Wed, 07 Jan 2026 17:03:31 +0900
+    Ready:          	True
+    Restart Count: 	 0
+    Limits:
+      cpu:     	100m
+      memory:  	256Mi
+    Requests:
+      cpu:        	100m
+      memory:	256Mi
+    Environment:  <none>
+	~~~~~~~~~~ 중간 생략 ~~~~~~~~~~
+
+
+EX5) LimitRange defaultRequest 강제: request 미기재 파드에 기본 request가 자동 설정되는지 확인
+-스케줄링 기준(request)을 강제로 만들 수 있다.
+
+-defaultRequest
+ # cpu: 200m
+ # memory: 128Mi
+
+##설정 결과값(Pod)
+~~~~중간 생략~~~~
+ kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"LimitRange","metadata":{"annotations":{},"name":"lr-defaultreq","namespace":"rq-lab"},"spec":{"limits":[{"defaultRequest":{"cpu":"100m","memory":"128Mi"},"type":"Container"}]}}
+-> defaultRequest (Pod request 기본값)
+
+
+
+
