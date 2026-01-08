@@ -1,0 +1,13 @@
+#Pod 개념과 동작 원리
+
+-./.kube/config 파일은 쿠버네티스 API를 조정하기 위한 인증서 파일이다.
+이 파일이 없으면 API에게 명령 불가
+-kubectl get pod -o wide --watch
+실시간으로 Pod 생성 및 Status 확인 가능
+
+-kubectl get pod nginx-pod -o yaml
+Pod의 정보를 yaml파일로 확인 (상세정보 확인 가능)
+
+-한개의 Pod에 2개의 컨테이너를 생성, --watch 명령을 통해 확인
+NAME        	READY   STATUS    RESTARTS   AGE   IP               NODE           NOMINATED NODE   READINESS GATES
+multipod  	2/2     Running     0        10m 10.244.1.42   k8s-worker1            <none>             <none>

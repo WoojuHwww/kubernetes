@@ -1,0 +1,86 @@
+#2026/01/08
+#학습내용
+-쿠버네티스 Pod 개념과 동작 원리
+-Pod안에는 하나 이상의 컨테이너가 속하게 되고 해당 컨테이너들은 같은IP와 Port 공간을 가지게 된다. 그래서 Pod 안의 컨테이너들은 Localhost를 통해 통신이 가능함
+
+#POD 동작 flow
+1. 사용자가 Pod 생성 (run, yaml)
+2. API Server가 요청 처리
+문법, RBAC 권한 검사-> etcd에 Pod 정보 저장
+3. scheduler가 실행할 Node 선택
+4. 선택된 Node의 kubelet이 감지
+5. kubelet이 Pod의 스펙 읽기, 컨테이너 런타임에 요청
+6. 컨테이너 런타임이 컨테이너 생성
+7. Port Running, kubelet이 Api Server에 상태 보고 -> running 동작
+
+#POD 실행 이후 동작
+-Pod가 실행된 이후에도 kubelet은 pod를감시 -> 상황에 따라 컨테이너 재시작, Pod 재생성 (Deployment)
+
+#livenessProbe
+-컨테이너가 아직 살아있는 상태인가를 쿠버네티스가 직접 확인하는 방법
+-kubelet은 Pod가 워커 노드에서 실행되면 정해진 주기마다 컨테이너 상태를 확인
+-livenessProbe가 실패하면 kubelet은 컨테이너 재시작
+
+#Self-healing Pod
+-문제가 발생했을 때 쿠버네티스가 스스로 정상으로 되돌리는 구조
+-kubelet이 livenessProbe 체크, probe 실패 감지시 컨테이너 종료 후 새로 생성
+
+#livenessProbe 매커니즘
+1) httpGet probe
+-지정한 IP,port,path로 HTTP GET 요청을 보냄 (응답코드 200번대 = 정상)
+-미응답, 오류코드 반환 시 컨테이너 재시작
+
+2) tcpSocket probe
+-지정된 port로 TCP연결을 시도 후 실패하면 컨테이너 재시작
+ex) MySQL, MariaDB, PostgreSQL, TCP 서버, SSH 데몬등
+
+3) exec probe
+-컨테이너 내부에서 지정한 명령어를 실행해 종료코드 반환(내부에서 직접 검사)
+
+#Pod - init container & infra container
+-init Container: 본 컨테이너가 실행되기 전에 준비 작업을 하는 컨테이너
+ 특징 : 반드시 먼저 실행되고 모두 종료되야지 메인 컨테이너가 실행됨. 
+-Infra Container: Pod 자체를 유지하기 위해 자동으로 생성되는 기반 컨테이너
+ 특징 : 쿠버네티스가 자동 생성하는 컨테이너로 Pod의 IP주소, 볼륨등을 유지하는 역할
+
+#Static Pod
+-특정 디렉터리를 감시해 파일이 생성되면 Pod도 같이 생성됨
+-API SERVER, SCHEDULER, Controller Manager와 같은 핵심 컴포넌트 실행에 사용된다.
+-Kubelet이 직접 생성하는 Pod이며 노드에 직접 파일로 존재한다.
+
+#Pod 3개 요청 시 쿠버네티스 동작 순서
+-사용자가 Deployment를 통해 Pod3개를 유지하라고 요청
+1. API Server.
+요청 내용 검증, Pod가 필요하다는 정보를 etcd에 저장
+2. Controller
+API Server에 Pod객체 생성을 요청
+3. API Server
+컨트롤러의 요청을 받고 객체 생성
+4. Scheduler
+nodeName이 없는 Pod를 발견하고 nodeName을 기록
+5. API Server
+스케줄러가 기록한 결과를 etcd에 저장
+6. Kubelet
+자기 노드로 지정된 Pod를 발견하고 Pod를 실행(실제 Pod를 만드는 주체)
+
+#Kubernetes Controllers
+
+#ReplicationController
+-Pod를 지정한 개수만큼 항상 유지(죽거나 삭제되면 다시 생성)
+-Pod 자체를 직접 감시하는게 아니라 Label을 기준으로 Pod를 관리한다.
+
+#Label 기반 관리 개념
+ex) label: app=web replicas: 3 (app=web 라벨이 붙은 Pod를 3개 유지)
+
+#YAML 기본 구성 요소
+-replicas 	: 유지해야 하는 Pod 개수
+-selector 	: ReplicationController가 관리할 Pod를 선택하는 기준 (라벨)
+-template	: Pod가 부족할 때 새로 생성할 Pod의 설계도
+
+-> controller는 label을 보고 관리할 대상을 결정
+
+
+
+
+
+

@@ -1,0 +1,31 @@
+#Pod-livenessProbe 
+
+kubectl  apply  -f  pod-liveness.yaml 
+
+kubectl  describe  pod  nginx-pod-liveness | grep -i liveness
+
+Name:             nginx-pod-liveness
+    Liveness:       http-get http://:80/ delay=0s timeout=1s period=10s #success=1 #failure=3
+  Normal  Scheduled  107s  default-scheduler  Successfully assigned default/nginx-pod-liveness to k8s-worker1
+
+
+-initialDelaySeconds: 15	# 컨테이너 시작 후 15초 뒤부터 probe 시작	(default = 0sec)
+-periodSeconds: 20	 	# 20초마다 livenessProbe 실행			(default = 10sec)
+-timeoutSeconds: 1 	 	# 1초 안에 응답 없으면 실패로 판단		(default = 1sec)
+-successThreshold: 1 	# 1번 성공하면 정상으로 판단			(default = 1)
+-failureThreshold: 3     	# 3번 연속 실패하면 컨테이너 재시작		(default = 3)
+
+#exec 방식으로 컨테이너 검증
+cat pod-exec-liveness.yaml
+~~~중간 생략~~~
+livenessProbe:
+      exec:
+        command:
+        - /bin/sh
+        - -c
+        - test  -f  /usr/share/nginx/html/healthy
+-해당 컨테이너 안에 healthy 파일이 생성되기 전까지 컨테이너 재실행(오류 발생)
+
+#컨테이너 재실행 확인
+kubectl describe pod nginx-pod-liveness | tail -10
+-healthy 파일 생성 전까지 컨테이너 Killing이 반복
