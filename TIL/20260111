@@ -1,0 +1,12 @@
+#2026/01/11
+#학습내용
+
+#ReplicaSet
+-Pod를 지정한 replicas에 맞게 설정함
+-Pod는 쉽게 죽을 수 있지만 서비스는 항상 살아있어야함
+ex) 웹 서버를 3개 띄워 운영중이면 1개가 죽어도 다시 3개로 복구
+
+-replicas : 유지해야하는 Pod 개수
+-selector : ReplicaSet이 Pod를 고르는 조건 (라벨 조건)
+-template : Pod가 부족할 때 새로 만들 Pod의 설계도,
+template, metadata, labels는 selector와 항상 일치해야함.

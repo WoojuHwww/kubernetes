@@ -1,0 +1,31 @@
+#ReplicaSet
+
+watch -n 2 kubectl get pods -o  wide
+
+Every 2.0s: kubectl get pods -o wide                                                                 k8s-master: Fri Jan  9 10:09:36 2026
+
+NAME          	READY   STATUS    RESTARTS   AGE     IP                NODE          NOMINATED NODE   READINESS GATES
+rs-nginx-bjpf5   	1/1         Running    0                 4m27s   10.244.1.61   k8s-worker1   <none>                   <none>
+rs-nginx-jnl8m   	1/1         Running    0                 4m27s   10.244.2.52   k8s-worker2   <none>                   <none>
+rs-nginx-tkjrf   	1/1         Running    0                 4m27s   10.244.2.53   k8s-worker2   <none>                   <none>
+
+#pod 실행 모니터링
+kubectl  get  replicasets.apps
+
+NAME       DESIRED   CURRENT   READY   AGE
+rs-nginx    3              3               3           5m31s
+
+-kubectl get  pods  --show-labels
+NAME             	READY   STATUS    RESTARTS   AGE     LABELS
+rs-nginx-jnl8m   	1/1        Running     0                 7m44s   app=webui
+rs-nginx-lxbqh   	1/1        Running     0                 59s       app=webui
+rs-nginx-tkjrf   	1/1        Running     0                 7m44s   app=webui
+-> 같은 라벨의Pod 3개 실행 확인
+
+#Replica 확장, 축소
+-kubectl scale  replicaset  rs-nginx  --replicas=5
+-kubectl scale  replicaset  rs-nginx  --replicas=2
+#ReplicaSet 컨트롤러 삭제
+-kubectl  delete  replicasets.apps  rs-nginx
+
+
