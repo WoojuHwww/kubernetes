@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs-lab-a
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+      env: prod
+  template:
+    metadata:
+      labels:
+        app: web
+        env: prod
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.28.0
+        ports:
+        - containerPort: 80
+
