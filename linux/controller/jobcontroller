@@ -1,0 +1,17 @@
+#Job Controller
+
+#Job Controller 문법
+-completions :Job 전체 기준으로 성공한 Pod 수가 5개가 되면 Job 상태가 Completed로 전환
+-parallelism :Job이 동시에 실행할 Pod 개수를 정한다. (동시에 최대 2개의 Pod 실행)
+-activeDeadlineSeconds :Job이 시작된 후 a초가 지나면 실행 중인 Pod가 있어도 Job 전체를 강제 종료
+-restartPolicy: OnFailure = 실패하면 같은 Pod 안에서 컨테이너 재실행
+-restartPolicy: Never = 실패해도 같은 Pod에서는 재실행 안 함
+-backoffLimit: 3 = Job이 최대 몇 번 실패까지 허용할지를 정한다. (default 6)
+
+#CronJob 주요 명령어
+-schedule : 언제 실행할지 결정 (cron과 같은 문법)
+-jobTemplate : CronJob이 만든 Job의 템플릿
+-SuccessfulJobsHistoryLimit : 성공한 Job을 몇 개를 남길지
+-failedJobsHistoryLimit : 실패한 Job 몇 개를 남길지
+-ConcurrencyPolicy : ALLOW = Job 여러 개 실행 가능 / Forbid = Job 한개만 실행 가능
+

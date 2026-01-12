@@ -1,0 +1,12 @@
+#StatefulSet
+
+-podManagementPolicy: OrderedReady -> Pod를 생성/삭제시 순서를 보장
+
+-podManagementPolicy: Parallel -> Pod 동시 생성/ 삭제
+
+-ControllerRevision : Pod를 만드는 설계도(template)의 버전 기록
+ex) kubectl describe controllerrevisions.app sf-nginx-56###
+-> statefulSet, DaemonSet이 rolling, rollback을 하기 위한 기록
+
+-kubectl rollout undo statefulset sf-nginx
+#statefulSet을 지금의 이전 버전으로 롤백
