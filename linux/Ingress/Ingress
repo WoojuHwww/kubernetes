@@ -1,0 +1,6 @@
+#Ingress setting
+
+#Nginx Ingress Controller 설치
+kubectl apply -f ingress-nginx deploy.yaml
+
+

@@ -1,0 +1,33 @@
+#Pod생성 시 status가 ImagePullBackOff가 나오는 에러
+
+#ErrImagePull
+-kubelet 이 컨테이너 이미지 pull을 첫 번째로 실패했을 때 상태 
+
+#ImagePullBackOff
+-kubelet이 여러번 이미지 pull을 실패했을 때 상태
+
+#발생 시점
+-Node가 Image pull을 시도했을 때 실패하면 발생
+
+#원인
+-강의 수강 중 학원에서 같은 ip대역의 사용자가 동시에 image pull 진행으로
+docker에서 해당 ip 차단
+
+#해결 방법
+- kubectl create secret docker-registry dockerhub-secret \
+--docker-username=SOLDESK\
+--docker-password='PASSWORD1234'\
+--docker-email=SOLDESK@naver.com
+
+#확인
+-kubectl get secret dockerhub-secret
+
+NAME               	TYPE                                    DATA   AGE
+dockerhub-secret	kubernetes.io/dockerconfigjson   1         11m
+
+#yaml 파일에 secret 명시
+    spec:
+      imagePullSecrets:	    
+      - name: dockerhub-secret	 
+
+

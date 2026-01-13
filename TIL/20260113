@@ -1,0 +1,13 @@
+#2026/01/03
+#학습내용
+
+#Headless Service
+-ClusterIP를 생성하지 않으며 Pod의 IP를 노출 
+-> Pod 각각을 식별할 필요가 있을 때 사용 (DB, Kafka등)
+-> APP이 직접 Pod ip 목록중에 선택해서 사용, kube-proxy 미사용	
+
+#Ingress
+-Client와 Service 사이에서 TCP 80, 443 요청을 URL 규칙에 따라 Service로 분기
+-Ingress : 규칙만 정의하는 yaml 파일
+-Ingress Controller: 실제 트래픽을 처리하는 프로그램(Nginx,HAProxy)
+

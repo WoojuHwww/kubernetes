@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sol-ingress
+  namespace: soldesk
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /curriculum(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: curriculum-service
+                port:
+                  number: 80
+
+          - path: /main(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: main-service
+                port:
+                  number: 80
+
+          - path: /auth(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+
+          - path: /(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: sol-home-service
+                port:
+                  number: 80
+
+~
+~
+
