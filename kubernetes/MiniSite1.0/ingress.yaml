@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sol-ingress-html
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /curriculum(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: curriculum-service
+            port:
+              number: 80
+
+      - path: /login(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: 80
+
+      - path: /class(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: class-service
+            port:
+              number: 80

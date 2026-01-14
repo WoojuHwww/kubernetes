@@ -1,0 +1,10 @@
+#2026/01/14
+
+#학습내용
+-정적인 html 페이지를 image로 빌드해 push, kubernetes에서 deployment 방식으로
+pod를 생성 후 ingress.yaml 파일을 apply해 ingress controller 사용.
+-> Kubernetes Deployment와 Ingress Controller를 활용한 정적 웹 페이지 배포 실습
+
+#rewrite-target
+-ingress 설정 시 프론트 파일을 매칭해서 찾음
+

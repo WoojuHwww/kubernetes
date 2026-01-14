@@ -1,0 +1,25 @@
+#MiniSite 학습 주요 명령어
+
+#Docker 명령어
+-docker build -t woojuhwan/soldesk-home:1.0 .
+-docker push woojuhwan/soldesk-home:1.0
+
+#rolling update
+#make a new docker image and push
+-kubectl set image deployment/sol-home-deploy nginx=woojuhwan/soldesk-home:1.0
+
+-kubectl annotate deployment sol-home-deploy \
+kubernetes.io/change-cause="sol-home-deploy v1.0 --> v1.1 update" --overwrite
+
+#check
+-kubectl rollout history deployment sol-home-deploy
+
+deployment.apps/sol-home-deploy
+REVISION  CHANGE-CAUSE
+1         <none>
+2         sol-home-deploy v1.0  -->  v1.1 update
+
+#rollback
+-kubectl  rollout  undo  deployment  sol-home-deploy  --to-revision=1
+
+

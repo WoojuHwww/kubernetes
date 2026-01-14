@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: class-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: class
+  template:
+    metadata:
+      labels:
+        app: class
+    spec:
+      containers:
+      - name: nginx
+        image: konan7979/soldesk-class:1.0
+        ports:
+        - containerPort: 80
+
