@@ -1,0 +1,24 @@
+#Pod Scheduling
+
+#nodeSelector
+-kubectl label  node k8s-worker1  gpu=true
+-kubectl  get nodes -L gpu
+-kubectl label  node k8s-worker{1,2}  gpu=true
+-kubectl label nodes k8s-worker2 zone=lab
+
+-kubectl label  node k8s-worker1  gpu-
+-kubectl label  node k8s-worker{1,2}  gpu-
+
+#Label 추가
+-kubectl  label  node  k8s-worker1  env=prod  region=seoul  disk=ssd  --overwrite
+-kubectl  label  node  k8s-worker2  env=prod  region=busan  disk=ssd  --overwrite
+
+#Taint/Toleration
+#taint 확인
+-kubectl  describe  nodes k8s-master | grep -i taint
+
+#taint 설정
+-kubectl  taint  node  k8s-master  node-role.kubernetes.io/control-plane:NoSchedule
+
+#taint 삭제
+-kubectl  taint  node  k8s-master  node-role.kubernetes.io/control-plane-

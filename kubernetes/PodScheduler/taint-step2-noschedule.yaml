@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taint-step1-pod-1
+spec:
+  tolerations:
+  - key: role
+    operator: Equal
+    value: db
+    effect: NoSchedule
+  containers:
+  - name: nginx-container
+    image: nginx:1.29.1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taint-step1-pod-2
+
