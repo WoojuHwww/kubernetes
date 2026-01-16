@@ -1,0 +1,19 @@
+#2026/01/
+#학습내용
+
+#Cordon/Drain
+-실습, Drain을 통해 Pod 실행 node 변경
+
+#Kubernetes Storage
+1. EmptyDir
+-Pod가 Node에 할당될 때 생성되는 빈 디렉터리
+2. hostPath
+-worker node 의 실제 경로를 pod에 연결
+ex) worker-node에 html 파일 생성 후 master에서 pod 생성
+3. ConfigMap / Secret
+-객체에 저장된 데이터를 파일 형태로 마운트
+4. PV/PVC 기반 영구 저장소
+-pod가 없어져도 데이터 유지 (DB, 로그등에 사용)
+
+# StorageClass, Dynamic Provisioning
+-pvc가 생성되는 순간, 필요한 PV를 자동으로 만들어줌

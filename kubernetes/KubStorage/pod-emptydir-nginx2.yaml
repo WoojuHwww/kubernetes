@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-emptydir-nginx2
+spec:
+  volumes:
+  - name: html
+    emptyDir: {}
+
+  containers:
+  - name: nginx-a
+    image: nginx:1.29.1
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+
+  - name: nginx-b
+    image: nginx:1.29.1
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: html
+
+      mountPath: /usr/share/nginx/html
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      cat > /etc/nginx/conf.d/default.conf <<'CONF'
+      server {
+        listen 8080;
+        server_name _;
+        root /usr/share/nginx/html;
+        index index.html;
+        location / {
+          try_files $uri $uri/ =404;
+        }
+      }
+      CONF
+      nginx -g 'daemon off;'

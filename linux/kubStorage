@@ -1,0 +1,40 @@
+#KubernetesStorage
+
+#PV/PVC
+-kubectl get pv
+-kubectl describe pv
+
+#초기 세팅
+#NFS 설정
+-dnf install -y nfs-utils
+-systemctl start nfs-server.service
+
+-mkdir -p /export/k8s
+-chmod 777 /export/k8s
+-vi /etc/exports
+/export/k8s 192.168.111.0/24(rw,sync,no_root_squash)
+
+#설정 사항 반영
+exportfs -rv
+
+#설정 확인
+exportfs -v
+
+#NFS Server로 접속 확인
+dnf  install -y  nfs-utils
+
+showmount -e 192.168.111.100
+
+# PV 확인
+kubectl get persistentvolume
+kubectl get persistentvolumeclaim
+kubectl describe pv
+kubectl describe pvc
+
+#Local-pathProvisioner 설치
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.34/deploy/local-path-storage.yaml
+
+#storage class 확인
+kubectl get sc
+
+

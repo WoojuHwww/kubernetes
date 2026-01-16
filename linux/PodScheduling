@@ -22,3 +22,12 @@
 
 #taint 삭제
 -kubectl  taint  node  k8s-master  node-role.kubernetes.io/control-plane-
+
+#Drain
+-kubectl drain k8s-worker2 --ignore-daemonsets --force=false
+
+#Cordon
+-kubectl cordon k8s-worker1
+-kubectl uncordon k8s-worker1
+
+
