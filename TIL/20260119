@@ -1,0 +1,12 @@
+#2026/01/19
+#학습내용
+
+#AutoScaling
+1. HPA (horizontal pod autoscaling) : 트래픽 과 pod 수 비례
+2. VPA (vertical pod autoscaling) : 트래픽과 pod 성능 비례
+3. Cluster autoscaling : 트래픽과 Node 수 비례
+
+#Metric Server
+-Cluster 내에 위치하며 각 pod와 Node들의 트래픽 수집
+
+

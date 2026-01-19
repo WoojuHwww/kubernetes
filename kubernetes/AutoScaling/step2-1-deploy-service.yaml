@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-web-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-v2
+  template:
+    metadata:
+      labels:
+        app: web-v2
+    spec:
+      containers:
+      - name: web
+        image: smlinux/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 200m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-web-v2
+

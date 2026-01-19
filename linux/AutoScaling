@@ -1,0 +1,31 @@
+#AutoScaling
+
+# 메트릭 서버 설치
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl  edit  deployment metrics-server  --namespace  kube-system
+~~~~~~~~~~~~~ 중간 생략 ~~~~~~~~~~~~~
+ 37     spec:
+ 38       containers:
+ 39       - args:
+ 40         - --cert-dir=/tmp
+ 41         - --secure-port=10250
+ 42         - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+ 43         - --kubelet-use-node-status-port
+ 44         - --metric-resolution=15s
+ 45         - --kubelet-insecure-tls		#추가
+ 46         image: registry.k8s.io/metrics-server/metrics-server:v0.8.0
+ 47         imagePullPolicy: IfNotPresent
+~~~~~~~~~~~~~ 중간 생략 ~~~~~~~~~~~~~
+
+
+#Metrice 서버 동작 확인
+[root@k8s-master ~]# kubectl  get  pods  --namespace  kube-system | grep metric
+metrics-server-7fbfbcc44c-976dq      1/1     Running   0              16m
+
+#hpa 설정 후 확인
+[root@k8s-master ~]# kubectl get horizontalpodautoscalers.autoscaling
+NAME      REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+hpe-web   Deployment/deploy-web   cpu: 0%/50%   1         10        1          21s
+
+

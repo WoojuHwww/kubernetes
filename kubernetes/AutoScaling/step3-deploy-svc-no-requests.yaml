@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-no-req
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-no-req
+  template:
+    metadata:
+      labels:
+        app: web-no-req
+    spec:
+      containers:
+      - name: web
+        image: smlinux/hpa-example
+        ports:
+        - containerPort: 80
+        # resources.requests 없음 (의도적으로 제거)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-no-req
+spec:
+  type: ClusterIP
+  selector:
+    app: web-no-req
+  ports:
+  - port: 80
+    targetPort: 80	

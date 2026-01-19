@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2		# HPA 버전
+kind: HorizontalPodAutoscaler		# HPA 리소스 생성
+metadata:
+  name: hpa-web		# HPA 이름
+
+spec:
+  minReplicas: 1		# 최소 pod 개수
+  maxReplicas: 10		# 최대 pod 개수
+  scaleTargetRef:		# autoscaling 대상 지정
+    apiVersion: apps/v1	# api 버전 1
+    kind: Deployment		# 대상 리소스 종류 지정
+    name: deploy-web	# 대상 Deployment의 이름
+
+  metrics:			# HPA가 판단할 리소스 기준
+  - type: Resource		
+    resource:
+      name: cpu		# CPU 기준
+      target:
+        type: Utilization	# 사용률을 기반으로 지정
+        averageUtilization: 50	# CPU 소모율이 50%이상일 경우 scale-out
